@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - prsx</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #E3E3E3; }
+        .header { background: #0074BD; color: white; padding: 5px 20px; display: flex; justify-content: space-between; align-items: center; height: 40px; }
+        .container { display: flex; max-width: 1100px; margin: 15px auto; gap: 20px; }
+        
+        /* Sidebar */
+        .sidebar { width: 160px; }
+        .side-item { padding: 8px; font-size: 14px; cursor: pointer; color: #333; }
+        .side-item:hover { background: #D0D0D0; border-radius: 3px; }
+
+        /* Content */
+        .main { flex: 1; }
+        .card { background: white; border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 3px; }
+        
+        /* Catalog */
+        .catalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .item { border: 1px solid #eee; padding: 10px; text-align: center; }
+        .item img { width: 80px; height: 80px; display: block; margin: 0 auto 10px; background: #f9f9f9; }
+        .buy-btn { background: #00843D; color: white; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; border-radius: 3px; }
+        .buy-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .robux-text { font-weight: bold; color: #fff; }
+        .inv-tag { display: inline-block; background: #eee; padding: 3px 8px; margin: 3px; border-radius: 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div style="font-weight:bold; font-size:20px;">prsx</div>
+        <div>
+            Robux: <span id="rbx-balance" class="robux-text">0</span> | 
+            <span id="my-name" style="margin-right:15px;">User</span>
+            <button onclick="logout()" style="background:none; border:1px solid white; color:white; cursor:pointer; font-size:11px;">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="side-item">🏠 Home</div>
+            <div class="side-item">👤 Profile</div>
+            <div class="side-item">👫 Friends</div>
+            <div class="side-item">🛒 Catalog</div>
+        </div>
+
+        <div class="main">
+            <div class="card">
+                <h1 id="welcome-title" style="margin:0;">Hello!</h1>
+                <p style="color:gray;">Welcome back to the 2017 experience.</p>
+            </div>
+
+            <div class="card">
+                <h3>Limited Catalog</h3>
+                <div class="catalog-grid">
+                    <div class="item">
+                        <img src="https://tr.rbxcdn.com/f9c8d504a370e70f69a53165b533f81e/420/420/Hat/Png" alt="Dominus">
+                        <b>Dominus Frigidus</b><br>
+                        <span style="color: #00843D;">Price: 80 R$</span><br><br>
+                        <button class="buy-btn" onclick="buyItem('Dominus Frigidus', 80)">Buy Now</button>
+                    </div>
+                    <div class="item">
+                        <img src="https://tr.rbxcdn.com/866d936166e4a2e588147d7e3f848d5f/420/420/Hat/Png" alt="Valk">
+                        <b>Valkyrie Helm</b><br>
+                        <span style="color: #00843D;">Price: 50 R$</span><br><br>
+                        <button class="buy-btn" onclick="buyItem('Valkyrie Helm', 50)">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>My Inventory</h3>
+                <div id="my-inventory">Nothing owned yet.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const _supabase = supabase.createClient('https://iiimzdsejycfmgiewrlg.supabase.co', 'sb_publishable_7u6LTnRXA_J4Ei01_rSBdg_1Y3jRgeH');
+        const user = localStorage.getItem('prsx_user');
+
+        if (!user) { window.location.href = "login.html"; }
+        document.getElementById('my-name').innerText = user;
+        document.getElementById('welcome-title').innerText = "Hello, " + user + "!";
+
+        async function syncData() {
+            const { data, error } = await _supabase.from('users').select('*').eq('username', user).single();
+            if (data) {
+                document.getElementById('rbx-balance').innerText = data.robux;
+                
+                // Atvaizduojame inventorių
+                const invDiv = document.getElementById('my-inventory');
+                if (data.inventory) {
+                    invDiv.innerHTML = data.inventory.split(',').map(item => `<span class="inv-tag">⭐ ${item}</span>`).join('');
+                } else {
+                    invDiv.innerText = "Empty";
+                }
+            }
+        }
+
+        async function buyItem(itemName, price) {
+            const { data: userData } = await _supabase.from('users').select('*').eq('username', user).single();
+
+            if (userData.robux < price) {
+                return alert("You don't have enough Robux!");
+            }
+
+            const newRobux = userData.robux - price;
+            const newInventory = userData.inventory ? userData.inventory + "," + itemName : itemName;
+
+            const { error } = await _supabase.from('users').update({ 
+                robux: newRobux, 
+                inventory: newInventory 
+            }).eq('username', user);
+
+            if (!error) {
+                alert("Successfully bought " + itemName + "!");
+                syncData();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('prsx_user');
+            window.location.href = "index.html";
+        }
+
+        // Užkrauti duomenis vos prisijungus
+        syncData();
+    </script>
+</body>
+</html>

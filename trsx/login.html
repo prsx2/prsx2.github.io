@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>prsx | Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #232527; 
+            color: white; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+        }
+        .login-box { 
+            background-color: #393B3D; 
+            padding: 40px; 
+            border-radius: 8px; 
+            width: 350px; 
+            text-align: center; 
+            border: 1px solid #111;
+        }
+        h2 { margin-bottom: 20px; font-weight: 400; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            background: #232527; 
+            border: 1px solid #111; 
+            color: white; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            outline: none;
+        }
+        input:focus { border-color: #00A2FF; }
+        .btn { 
+            width: 100%; 
+            padding: 15px; 
+            background: #00A2FF; 
+            border: none; 
+            color: white; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            margin-top: 10px;
+        }
+        .btn:hover { background: #0081CC; }
+        .status { font-size: 13px; margin-top: 15px; color: #ff4d4d; }
+        .back-link { display: block; margin-top: 15px; color: #888; text-decoration: none; font-size: 13px; }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>Log In to prsx</h2>
+        <input type="text" id="user" placeholder="Username">
+        <input type="password" id="pass" placeholder="Password">
+        <button class="btn" onclick="login()">Sign In</button>
+        <div id="status" class="status"></div>
+        <a href="index.html" class="back-link">← Back to home</a>
+    </div>
+
+    <script>
+        // Tavo Supabase duomenys
+        const _supabase = supabase.createClient(
+            'https://iiimzdsejycfmgiewrlg.supabase.co', 
+            'sb_publishable_7u6LTnRXA_J4Ei01_rSBdg_1Y3jRgeH'
+        );
+
+        async function login() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            const statusDiv = document.getElementById('status');
+
+            if (!u || !p) {
+                statusDiv.innerText = "Please fill in all fields!";
+                return;
+            }
+
+            // Ieškome vartotojo duomenų bazėje
+            const { data, error } = await _supabase
+                .from('users')
+                .select('*')
+                .eq('username', u)
+                .eq('password', p) // Realiame projekte slaptažodžiai būna šifruoti, bet tavo atveju naudojame tiesioginį palyginimą
+                .maybeSingle();
+
+            if (error) {
+                console.error(error);
+                alert("Database connection error!");
+                return;
+            }
+
+            if (data) {
+                // SĖKMĖ: Įrašome vardą į naršyklės atmintį
+                localStorage.setItem('prsx_user', data.username);
+                // Nukreipiame į pagrindinį nario puslapį
+                window.location.href = "home.html";
+            } else {
+                // KLAIDA: Neteisingi duomenys
+                statusDiv.innerText = "Wrong username or password!";
+            }
+        }
+
+        // Leidžia prisijungti paspaudus "Enter" klavišą
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>

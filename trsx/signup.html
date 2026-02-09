@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>prsx | Sign Up</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { margin: 0; background-color: #232527; color: white; font-family: 'Segoe UI', Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .box { background-color: #393B3D; padding: 40px; border-radius: 8px; width: 350px; text-align: center; border: 1px solid #111; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #232527; border: 1px solid #111; color: white; border-radius: 4px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; background: #00843D; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Create Account</h2>
+        <p style="font-size: 13px; color: #aaa;">Join and get 100 Robux instantly!</p>
+        <input type="text" id="user" placeholder="Username">
+        <input type="password" id="pass" placeholder="Password">
+        <button class="btn" onclick="signUp()">Register</button>
+        <p><a href="login.html" style="color: #00A2FF; text-decoration: none; font-size: 13px;">Already have an account? Login</a></p>
+    </div>
+
+    <script>
+        const _supabase = supabase.createClient('https://iiimzdsejycfmgiewrlg.supabase.co', 'sb_publishable_7u6LTnRXA_J4Ei01_rSBdg_1Y3jRgeH');
+
+        async function signUp() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            if(!u || !p) return alert("Fill all fields!");
+
+            const { error } = await _supabase.from('users').insert([{ 
+                username: u, 
+                password: p, 
+                robux: 100, 
+                inventory: '' 
+            }]);
+
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                alert("Success! 100 Robux added. Now login.");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+</html>
