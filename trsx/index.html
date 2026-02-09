@@ -1,66 +1,186 @@
 <!DOCTYPE html>
-<html lang="en" class="notranslate" translate="no">
+<html lang="lt">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>prsx | Relive 2017</title>
+    <title>PRSX | ECS:R</title>
     <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --accent-color: #007bff;
+            --text-color: #ffffff;
+            --card-bg: #161616;
+            --glow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #000; color: #fff;
-            text-align: center;
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
+
+        /* Navigacijos juosta */
         nav {
-            background-color: #111; padding: 12px 40px;
-            display: flex; justify-content: flex-start; gap: 18px;
-            border-bottom: 1px solid #222;
-        }
-        nav a { color: #888; text-decoration: none; font-size: 14px; transition: 0.2s; }
-        nav a:hover { color: #fff; }
-
-        .hero { padding: 100px 20px 40px; }
-        .hero h1 { font-size: 72px; margin: 0; font-weight: 700; }
-        .hero p { font-size: 18px; color: #999; margin: 15px auto; max-width: 650px; }
-
-        .display-box {
-            width: 90%; max-width: 1000px; height: 350px;
-            background-color: #080808; border: 1px solid #151515;
-            margin: 40px auto; border-radius: 4px;
+            width: 100%;
+            height: 60px;
+            background: rgba(22, 22, 22, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .join-area { background-color: #050505; padding: 80px 20px; border-top: 1px solid #111; }
-        .join-area h2 { font-size: 36px; margin-bottom: 20px; }
-        .join-area p { color: #888; max-width: 750px; margin: 0 auto 40px; line-height: 1.6; }
-
-        .btn-blue {
-            background-color: #007bff; color: white;
-            padding: 12px 40px; border-radius: 4px;
-            text-decoration: none; font-weight: bold;
-            display: inline-block; transition: 0.2s;
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: var(--glow);
+            text-decoration: none;
         }
-        .btn-blue:hover { background-color: #0069d9; }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Hero sekcija */
+        .hero {
+            text-align: center;
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #888;
+            font-size: 18px;
+            max-width: 600px;
+        }
+
+        /* Katalogas / Kortelės */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 80%;
+            max-width: 1200px;
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--glow);
+            transform: translateY(-5px);
+        }
+
+        .card h3 { margin: 15px 0 10px; }
+        .card p { color: #aaa; font-size: 14px; }
+
+        .price {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #4cd137;
+        }
+
+        .buy-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .buy-btn:hover {
+            background: #0056b3;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px;
+            color: #444;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
+
     <nav>
-        <a href="index.html">Home</a>
-        <a href="#">Login</a>
-        <a href="#">Discord</a>
-        <a href="#">ToS</a>
+        <a href="index.html" class="logo">PRSX</a>
+        <div class="nav-links">
+            <a href="index.html">Pradžia</a>
+            <a href="login.html">Prisijungti</a>
+            <a href="signup.html">Registracija</a>
+        </div>
     </nav>
 
     <div class="hero">
-        <h1>Relive 2017.</h1>
-        <p>Free, no invite keys required. The most secure and private website of its kind.</p>
-        <div class="display-box"></div>
+        <h1>Sveiki atvykę į PRSX</h1>
+        <p>Geriausia vieta įsigyti ECS:R paslaugas ir skaitmeninius daiktus.</p>
     </div>
 
-    <div class="join-area">
-        <h2>How do I join?</h2>
-        <p>You have to fill out an application to join. This is done to prevent bots and other malicious players from joining our community.</p>
-        <a href="apply.html" class="btn-blue">Application</a>
+    <div class="container">
+        <div class="card">
+            <h3>Standard Pack</h3>
+            <p>Pagrindinis rinkinys naujokams.</p>
+            <span class="price">5.00 €</span>
+            <button class="buy-btn" onclick="alert('Pirkimas vykdomas...')">Pirkti</button>
+        </div>
+
+        <div class="card">
+            <h3>Pro Bundle</h3>
+            <p>Visi įrankiai tavo sėkmei.</p>
+            <span class="price">15.00 €</span>
+            <button class="buy-btn" onclick="alert('Pirkimas vykdomas...')">Pirkti</button>
+        </div>
+
+        <div class="card">
+            <h3>Elite Access</h3>
+            <p>VIP prieiga prie visų resursų.</p>
+            <span class="price">49.99 €</span>
+            <button class="buy-btn" onclick="alert('Pirkimas vykdomas...')">Pirkti</button>
+        </div>
     </div>
+
+    <div class="footer">
+        &copy; 2026 PRSX Project. Visos teisės saugomos.
+    </div>
+
 </body>
 </html>
